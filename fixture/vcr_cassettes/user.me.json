@@ -1,0 +1,49 @@
+[
+  {
+    "request": {
+      "body": "",
+      "headers": {
+        "accept": "application/json",
+        "authorization": "Bearer 4139b439f8cff422465c39c29bfeb0casdfasdfasdf"
+      },
+      "method": "get",
+      "options": [],
+      "request_body": "",
+      "url": "https://api.freshbooks.com/auth/api/v1/users/me"
+    },
+    "response": {
+      "binary": false,
+      "body": "{\"response\":{\"id\":2804980,\"profile\":{\"setup_complete\":true,\"first_name\":\"Eric\",\"last_name\":\"Froese\",\"phone_number\":null,\"address\":null,\"professions\":[{\"id\":3263354,\"business_id\":2713308,\"title\":\"Software as a Service\",\"company\":\"Clockk.com inc.\",\"designation\":null}],\"has_password\":true},\"identity_uuid\":\"04732001-0001-02ed-333a-491b46a14822\",\"first_name\":\"Eric\",\"last_name\":\"Froese\",\"email\":\"eric@clockk.com\",\"language\":\"en\",\"confirmed_at\":null,\"created_at\":\"2019-11-26T19:11:04Z\",\"unconfirmed_email\":null,\"setup_complete\":true,\"phone_numbers\":[{\"title\":\"\",\"phone_number\":null}],\"addresses\":[null],\"profession\":{\"id\":3263354,\"business_id\":2713308,\"title\":\"Software as a Service\",\"company\":\"Clockk.com inc.\",\"designation\":null},\"links\":{\"me\":\"/service/auth/api/v1/users?id=2804980\",\"roles\":\"/service/auth/api/v1/users/role/2804980\"},\"permissions\":{\"85pJNk\":{\"advanced_accounting.access\":true,\"attachments.access\":true,\"business_accountant.limit\":10,\"client.limit\":-1,\"proposals_candidate.access\":true,\"retainers_feature.access\":true,\"retainers.limit\":-1,\"rich_proposals.access\":true,\"staff.limit\":-1,\"BetaHeliosAsyncExpenses.access\":true,\"beta_mobile_create_expense_subcategory.access\":true,\"ios_beta_zendesk_widget.access\":true,\"mobile_receipt_rebilling.access\":true,\"helios_pushnotifications.beta.access\":true,\"ios_beta_payment_schedules.access\":true,\"helios_rebill_time.access\":true,\"esignatures.access\":true,\"helios_dashboard.access\":true,\"helios_late_fee_reminder.beta.access\":true,\"helios_bulk_actions_invoices.beta.access\":true,\"auto_bank_import.access\":true,\"helios_virtual_terminal.beta.access\":true,\"helios_expense_rebilling.beta.access\":true,\"helios_company_taxes.beta.access\":true,\"helios_invoice_archive.beta.access\":true,\"accountant_invite.access\":true,\"helios_sync_throttle.beta.access\":true,\"retainers.access\":true,\"BankReconciliation.access\":true,\"helios_push_resource_to_use_execute.beta.access\":true,\"new_time_tracking.access\":true,\"bank_rec_smart_match.access\":true,\"invoice_v2_search.access\":true,\"import_items_csv.access\":true,\"helios_remote_search.beta.access\":true,\"export_clients_csv.access\":true,\"helios_virtual_terminal_tutorial.beta.access\":true,\"helios_virtual_terminal_advertising.beta.access\":true,\"clients_v2_search.access\":true,\"retainer_contractor_time.access\":true,\"helios_stripe_virtual_terminal.beta.access\":true,\"invoice_v3_search.access\":true,\"invoice_profile_v2_search.access\":true,\"business_manager_role.access\":true,\"stripe_payments_intent.access\":true,\"billable_items_v2.access\":true,\"invoices_single_line_actions.access\":true,\"whats_new_widget.access\":true,\"payroll_integration.access\":true,\"improved_profit_and_loss_report.access\":true,\"chase_dao.access\":true,\"estimate_v3_search.access\":true,\"project_team_search.access\":true,\"dropbox_chooser.access\":true}},\"groups\":[{\"id\":8126380,\"group_id\":6337462,\"role\":\"owner\",\"identity_id\":2804980,\"business_id\":2713308,\"active\":true},{\"id\":8126874,\"group_id\":6337848,\"role\":\"owner\",\"identity_id\":2804980,\"business_id\":2713308,\"active\":true}],\"subscription_statuses\":{\"85pJNk\":\"active_trial\"},\"integrations\":{},\"business_memberships\":[{\"id\":8126380,\"role\":\"owner\",\"unacknowledged_change\":false,\"fasttrack_token\":\"eyJhbGciOiJIUzI1NiJ9.eyJmYXN0dHJhY2tfaWRlbnRpdHlfaWQiOiIyODA0OTgwIiwiZmFzdHRyYWNrX3N5c3RlbV9pZCI6IjQ3OTY3MjgiLCJmYXN0dHJhY2tfYnVzaW5lc3NfaWQiOiIyNzEzMzA4IiwiY3JlYXRlZF9hdCI6IjIwMTktMTEtMjdUMjA6MDc6MzkrMDA6MDAifQ.YL94LNcaX1TWeTTLIoDAK2qmvmhjixcHF7QU_vxK2XY\",\"business\":{\"id\":2713308,\"business_uuid\":\"04732001-0002-b5d6-0c53-44b24fc5f13f\",\"name\":\"Clockk.com inc.\",\"account_id\":\"85pJNk\",\"date_format\":\"mm/dd/yyyy\",\"address\":{\"id\":3441526,\"street\":\"12 Fake St.\",\"city\":\"St. Catharines\",\"province\":\"Ontario\",\"country\":\"Canada\",\"postal_code\":\"L2M 1B4\"},\"phone_number\":{\"id\":1391690,\"phone_number\":\"9053286111\"},\"business_clients\":[]}}],\"identity_origin\":null,\"roles\":[{\"id\":2918404,\"role\":\"admin\",\"systemid\":4796728,\"userid\":1,\"created_at\":\"2019-11-26T19:11:05Z\",\"links\":{\"destroy\":\"/service/auth/api/v1/users/role/2918404\"},\"accountid\":\"85pJNk\"}]}}",
+      "headers": {
+        "Server": "nginx",
+        "Date": "Wed, 27 Nov 2019 20:07:39 GMT",
+        "Content-Type": "application/json; charset=utf-8",
+        "Content-Length": "4050",
+        "Vary": "Accept-Encoding",
+        "X-Frame-Options": "SAMEORIGIN",
+        "X-XSS-Protection": "1; mode=block",
+        "X-Content-Type-Options": "nosniff",
+        "X-Download-Options": "noopen",
+        "X-Permitted-Cross-Domain-Policies": "none",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "ETag": "W/\"9c5947587f2b0830278d7c4dd7cc1fc9\"",
+        "Cache-Control": "max-age=0, private, must-revalidate",
+        "X-Request-Id": "3ad5be65-10f9-4444-958b-2a45a19bf057",
+        "X-Runtime": "0.043801",
+        "X-NewRelic-App-Data": "PxQBWV5TCBABVlVSBAUHUFQTGhEhCQ0WQg1UDl1KG0dAAEsSHwxWTBdeWBZIEFVGSDsIBlJfQw8QWFNAQEpTTABOCEwIDAAFC1UJUARYB1dQBQNUUU8VAhxGUQADBQ5VAANXVldSAQEHUho/",
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "499",
+        "X-RateLimit-Reset": "1574885320",
+        "Retry-After": "60",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Security-Policy": "default-src 'self'",
+        "X-Content-Security-Policy": "default-src 'self'",
+        "Strict-Transport-Security": "max-age=31556926; includeSubDomains; preload",
+        "Via": "1.1 google",
+        "Alt-Svc": "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  }
+]
