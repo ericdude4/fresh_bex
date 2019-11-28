@@ -1,6 +1,6 @@
-# FreshBex
+# :leaves: FreshBex
 
-**TODO: Add description**
+Adding support for different modules as I need them for my personal work. Please feel free to contribute!
 
 ## Installation
 
