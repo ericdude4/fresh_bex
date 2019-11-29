@@ -1,0 +1,42 @@
+[
+  {
+    "request": {
+      "body": "",
+      "headers": {
+        "accept": "application/json",
+        "authorization": "Bearer 585f03317706b314d8257f56aa6c3e879f6d0FAKETOKEN"
+      },
+      "method": "get",
+      "options": [],
+      "request_body": "",
+      "url": "https://api.freshbooks.com/accounting/account/85pJNk/projects/tasks?page=1&per_page=100"
+    },
+    "response": {
+      "binary": false,
+      "body": "{\n  \"response\": {\n    \"result\": {\n      \"page\": 1,\n      \"pages\": 1,\n      \"per_page\": 100,\n      \"tasks\": [\n        {\n          \"billable\": true,\n          \"description\": \"\",\n          \"id\": 135222,\n          \"name\": \"Software as a Service\",\n          \"rate\": {\n            \"amount\": \"0.00\",\n            \"code\": \"CAD\"\n          },\n          \"taskid\": 135222,\n          \"tax1\": 0,\n          \"tax2\": 0,\n          \"tdesc\": \"\",\n          \"tname\": \"Software as a Service\",\n          \"updated\": \"2019-11-26 14:12:05\",\n          \"vis_state\": 0\n        }\n      ],\n      \"total\": 1\n    }\n  }\n}\n",
+      "headers": {
+        "Server": "nginx",
+        "Date": "Fri, 29 Nov 2019 15:52:34 GMT",
+        "Content-Type": "application/json",
+        "Content-Length": "586",
+        "X-NewRelic-App-Data": "PxQBWV5TCBABVlVSAwEOVlcTGhE1AwE2QgNWEVlbQFtcCxYnRA9QFg1ZWU4DFVdfRgFPCkNFR0gUQ1lZBwUXEQoWWRFTSxYeA0kJTwBVAVdQDwdSUVoLAANQWFQbHAZKRggGVlNTVVYGBFkGAQwBVwpHFQdQDUAHOQ==",
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "497",
+        "X-RateLimit-Reset": "1575042815",
+        "Retry-After": "60",
+        "Access-Control-Allow-Origin": "*",
+        "X-Frame-Options": "SAMEORIGIN",
+        "X-XSS-Protection": "1; mode=block",
+        "X-Content-Type-Options": "nosniff",
+        "Content-Security-Policy": "default-src 'self'",
+        "X-Content-Security-Policy": "default-src 'self'",
+        "Strict-Transport-Security": "max-age=31556926; includeSubDomains; preload",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Via": "1.1 google",
+        "Alt-Svc": "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  }
+]

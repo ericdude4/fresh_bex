@@ -30,4 +30,10 @@ defmodule FreshBexTest do
       assert [%FreshBex.Project{} | _] = FreshBex.Project.list(recurse_pages: true)
     end
   end
+
+  test "gets authenticated user's tasks" do
+    use_cassette "tasks.list.recurse" do
+      assert [%FreshBex.Task{} | _] = FreshBex.Task.list(recurse_pages: true)
+    end
+  end
 end
