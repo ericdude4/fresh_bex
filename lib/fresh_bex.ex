@@ -27,7 +27,6 @@ defmodule FreshBex do
           access_token
 
         token ->
-          IO.inspect(token)
           raise(FreshBexError, "invalid access token provided")
       end
 

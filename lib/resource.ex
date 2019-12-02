@@ -48,7 +48,7 @@ defmodule FreshBex.Resource do
       end
 
     resource_path =
-      unless Keyword.get(opts, :overrides_resource_path) do
+      unless Keyword.get(opts, :resource_path_override) do
         quote do
           # Default to simply return the resource name as the resource path
           def resource_path() do
@@ -66,7 +66,7 @@ defmodule FreshBex.Resource do
 
     inject =
       case Keyword.get(opts, :only) do
-        nil -> [:get, :list]
+        nil -> [:get, :list, :create]
         list -> list
       end
 
@@ -201,6 +201,81 @@ defmodule FreshBex.Resource do
         end
       end
 
-    [api_url, pagination_data, resource_path, nested_resource, get, list]
+    create =
+      if :create in inject do
+        quote do
+          @doc """
+          Create new #{__MODULE__} resource. Parameters are not validated, but passed along in the request body. Please see FreshBooks API documentation for the appropriate body parameters for your resource.
+
+          ## Params
+          * `properties` - Map of resource properties to create the resource with. This will be different for each resource based on the specification in Harvest API
+          """
+          def create(properties, options \\ []) do
+            url = "#{api_url(options)}/#{resource_path()}"
+
+            resource_name = resource() |> String.replace("ies", "y")
+
+            body =
+              case Jason.encode(Map.put(%{}, resource_name, properties)) do
+                {:ok, body} ->
+                  body
+
+                {:error, %Jason.EncodeError{message: message}} ->
+                  raise(
+                    FreshBexError,
+                    "Invalid :properties. Was not able to encode to JSON. #{message}"
+                  )
+              end
+
+            case OAuth2.Client.post(
+                   FreshBex.get_client(Keyword.get(options, :access_token)),
+                   url,
+                   body,
+                   [{"Content-Type", "application/json"}]
+                 ) do
+              {:ok, %OAuth2.Response{body: resource}} ->
+                resource =
+                  Jason.decode!(resource, keys: :atoms)
+                  |> (fn map ->
+                        # singluarize the resource() method so we know where to find the data
+                        key =
+                          if String.ends_with?(resource(), "ies") do
+                            String.replace_suffix(resource(), "ies", "y")
+                          else
+                            String.replace_suffix(resource(), "s", "")
+                          end
+                          |> String.to_atom()
+
+                        map[key]
+                      end).()
+
+                struct!(__MODULE__, resource)
+
+              {:error, %OAuth2.Response{status_code: 422, body: body}} ->
+                {:error, Jason.decode!(body)}
+
+              {:error, %OAuth2.Response{status_code: 401, body: body}} ->
+                # run refresh then retry
+                case OAuth2.Client.refresh_token(
+                       FreshBex.get_client(Keyword.get(options, :access_token))
+                     ) do
+                  {:ok, %OAuth2.Client{} = client} ->
+                    get(options ++ [access_token: client.token])
+
+                  {:error, %OAuth2.Response{status_code: 401, body: body}} ->
+                    raise(FreshBexError, "Invalid refresh token")
+
+                  {:error, %OAuth2.Error{reason: reason}} ->
+                    raise(FreshBexError, "Error: #{inspect(reason)}")
+                end
+
+              {:error, %OAuth2.Error{reason: reason}} ->
+                raise(FreshBexError, "Error: #{inspect(reason)}")
+            end
+          end
+        end
+      end
+
+    [api_url, pagination_data, resource_path, nested_resource, get, list, create]
   end
 end

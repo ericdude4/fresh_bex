@@ -1,5 +1,5 @@
 defmodule FreshBex.Task do
-  use FreshBex.Resource, overrides_resource_path: true
+  use FreshBex.Resource, resource_path_override: true
 
   defstruct [
     :id,

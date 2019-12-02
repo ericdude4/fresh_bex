@@ -1,0 +1,44 @@
+[
+  {
+    "request": {
+      "body": "",
+      "headers": {
+        "accept": "application/json",
+        "authorization": "Bearer 0af7c468ad7524a34a0f28e880d503f3917f806kahsdkjfaksjdf"
+      },
+      "method": "get",
+      "options": [],
+      "request_body": "",
+      "url": "https://api.freshbooks.com/timetracking/business/2713308/time_entries?page=1&per_page=100"
+    },
+    "response": {
+      "binary": false,
+      "body": "{\"meta\": {\"total_logged\": 1800, \"total_logged_rounded_to_nearest_minute\": 1800, \"total_unbilled\": 1800, \"total_unbilled_rounded_to_nearest_minute\": 1800, \"total\": 1, \"per_page\": 100, \"page\": 1, \"pages\": 1}, \"time_entries\": [{\"id\": 60616219, \"identity_id\": 2804980, \"timer\": null, \"is_logged\": true, \"started_at\": \"2019-12-02T05:00:00Z\", \"created_at\": \"2019-12-02T20:33:51Z\", \"duration\": 1800, \"duration_rounded_to_nearest_minute\": 1800, \"client_id\": 194144, \"project_id\": 3624248, \"pending_client\": null, \"pending_project\": null, \"pending_task\": null, \"task_id\": null, \"service_id\": null, \"note\": \"notes\", \"active\": true, \"billable\": true, \"billed\": false, \"internal\": false, \"retainer_id\": null}]}",
+      "headers": {
+        "Server": "nginx",
+        "Date": "Mon, 02 Dec 2019 20:52:11 GMT",
+        "Content-Type": "application/vnd.api+json",
+        "Content-Length": "698",
+        "Vary": "Accept-Encoding",
+        "X-Version": "1911.49.0",
+        "X-NewRelic-App-Data": "PxQBWV5TCBABVllUBAQOU10TGhE1AwE2QgNWEVlbQFtcCxYnRA9QFg1ZWU4FDFZFVRYSBxlDUhULRERQBxVNFlkPXT1dVkBAWgBKT0MEQA0RRFQEXBdRXlU7BAxDQ14DFxMaA05WTVMCUA1aCw4GBQRVCVkBVAVUSBsGTURbWgtUUVUAAwEDUAZTVwMARE8EUQ5LB2U=",
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "495",
+        "X-RateLimit-Reset": "1575319991",
+        "Retry-After": "59",
+        "Access-Control-Allow-Origin": "*",
+        "X-Frame-Options": "SAMEORIGIN",
+        "X-XSS-Protection": "1; mode=block",
+        "X-Content-Type-Options": "nosniff",
+        "Content-Security-Policy": "default-src 'self'",
+        "X-Content-Security-Policy": "default-src 'self'",
+        "Strict-Transport-Security": "max-age=31556926; includeSubDomains; preload",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Via": "1.1 google",
+        "Alt-Svc": "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  }
+]
