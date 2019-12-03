@@ -283,11 +283,11 @@ defmodule FreshBex.Resource do
           Update given #{__MODULE__} resource. Parameters are not validated, but passed along in the request body. Please see FreshBooks API documentation for the appropriate body parameters for your resource.
 
           ## Params
-          * `resource` - `#{__MODULE__}` being updated.
+          * `id` - id of `#{__MODULE__}` resource being updated.
           * `changes` - Map of changes to be applied to the resource.
           """
-          def update(resource, changes, options \\ []) do
-            url = "#{api_url(options)}/#{resource_path()}/#{resource.id}"
+          def update(id, changes, options \\ []) do
+            url = "#{api_url(options)}/#{resource_path()}/#{id}"
 
             resource_name = resource() |> String.replace("ies", "y")
 
@@ -336,7 +336,7 @@ defmodule FreshBex.Resource do
                        FreshBex.get_client(Keyword.get(options, :access_token))
                      ) do
                   {:ok, %OAuth2.Client{} = client} ->
-                    update(resource, changes, options ++ [access_token: client.token])
+                    update(id, changes, options ++ [access_token: client.token])
 
                   {:error, %OAuth2.Response{status_code: 401, body: body}} ->
                     raise(FreshBexError, "Invalid refresh token")

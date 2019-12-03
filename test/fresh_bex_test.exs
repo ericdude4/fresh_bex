@@ -60,30 +60,6 @@ defmodule FreshBexTest do
 
   test "update time entry" do
     use_cassette "time_entry.update" do
-      time_entry = %FreshBex.TimeEntry{
-        active: true,
-        billable: true,
-        billed: false,
-        client_id: 201_781,
-        created_at: "2019-12-02T22:23:36Z",
-        duration: 4000,
-        duration_rounded_to_nearest_minute: 4000,
-        id: 60_626_711,
-        identity_id: 2_804_980,
-        internal: false,
-        is_logged: true,
-        note: "test",
-        pending_client: nil,
-        pending_project: nil,
-        pending_task: nil,
-        project_id: 3_624_248,
-        retainer_id: nil,
-        service_id: nil,
-        started_at: "2019-12-01T20:00:00Z",
-        task_id: nil,
-        timer: nil
-      }
-
       changes = %{
         is_logged: true,
         duration: 5000,
@@ -93,7 +69,7 @@ defmodule FreshBexTest do
         project_id: 3_624_248
       }
 
-      assert %FreshBex.TimeEntry{duration: 5000} = FreshBex.TimeEntry.update(time_entry, changes)
+      assert %FreshBex.TimeEntry{duration: 5000} = FreshBex.TimeEntry.update(60_626_711, changes)
     end
   end
 
