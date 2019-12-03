@@ -1,0 +1,42 @@
+[
+  {
+    "request": {
+      "body": "",
+      "headers": {
+        "accept": "application/json",
+        "authorization": "Bearer 66b1a87f7e7c39763fee984e423a3cb6c0117f60b305f06cfakefakefake"
+      },
+      "method": "delete",
+      "options": [],
+      "request_body": "",
+      "url": "https://api.freshbooks.com/timetracking/business/2713308/time_entries/60626711"
+    },
+    "response": {
+      "binary": false,
+      "body": "",
+      "headers": {
+        "Server": "nginx",
+        "Date": "Tue, 03 Dec 2019 15:52:13 GMT",
+        "Content-Type": "application/vnd.api+json",
+        "X-Version": "1911.49.0",
+        "X-NewRelic-App-Data": "PxQBWV5TCBABVllUBAQOU10TGhE1AwE2QgNWEVlbQFtcCxYnRA9QFg1ZWU4FDFZFVRYSBxlDUhULRERQBxVNFlkPXT1dVkBASktLBEIORhAHUw0VDw5dbFUKFRBOExtWSAEYAlNVVlQAUwFbDwsDBwddAVIdUR9AUQVVWF8HXAsIBgJbBlUFUEYdUFIOFQY/",
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "499",
+        "X-RateLimit-Reset": "1575388393",
+        "Retry-After": "59",
+        "Access-Control-Allow-Origin": "*",
+        "X-Frame-Options": "SAMEORIGIN",
+        "X-XSS-Protection": "1; mode=block",
+        "X-Content-Type-Options": "nosniff",
+        "Content-Security-Policy": "default-src 'self'",
+        "X-Content-Security-Policy": "default-src 'self'",
+        "Strict-Transport-Security": "max-age=31556926; includeSubDomains; preload",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Via": "1.1 google",
+        "Alt-Svc": "quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000"
+      },
+      "status_code": 204,
+      "type": "ok"
+    }
+  }
+]
