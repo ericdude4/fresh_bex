@@ -102,4 +102,16 @@ defmodule FreshBexTest do
       assert :ok = FreshBex.TimeEntry.delete(60_626_711)
     end
   end
+
+  test "create OAuth2.Client from access_token map" do
+    token = %{
+      access_token: "66b1a87f7e7c39763fee984e423a3cb6c0117f60b30FAKE_TOKEN",
+      expires_at: nil,
+      other_params: %{},
+      refresh_token: "67c185f56c8f748be134440e99ad6fbdfa5b26a52730a7FAKE_REFRESH",
+      token_type: "Bearer"
+    }
+
+    assert %OAuth2.Client{} = FreshBex.get_client(token)
+  end
 end

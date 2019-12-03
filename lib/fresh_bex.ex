@@ -26,6 +26,26 @@ defmodule FreshBex do
         %OAuth2.AccessToken{} = access_token ->
           access_token
 
+        token = %{
+          access_token: _,
+          token_type: _,
+          refresh_token: _
+        } ->
+          struct!(OAuth2.AccessToken, token)
+
+        token = %{
+          "access_token" => _,
+          "token_type" => _,
+          "refresh_token" => _
+        } ->
+          token =
+            for {key, val} <- token do
+              {String.to_existing_atom(key), val}
+            end
+            |> Enum.into(%{})
+
+          struct!(OAuth2.AccessToken, token)
+
         token ->
           raise(FreshBexError, "invalid access token provided")
       end
