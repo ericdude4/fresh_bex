@@ -358,7 +358,7 @@ defmodule FreshBex.Resource do
           @doc """
           Delete FreshBooks #{__MODULE__} with provided id.
 
-          Will return `:ok` on success, `{:error, 404}` if resource not found, or throw `HarvexError` for implementation errors.
+          Will return `:ok` on success, `{:error, 404}` if resource not found, or throw `FreshBexError` for implementation errors.
 
           ## Params
           * `id` - id of #{__MODULE__} resource to delete
