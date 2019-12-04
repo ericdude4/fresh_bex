@@ -9,37 +9,41 @@ defmodule FreshBexTest do
 
   test "gets authenticated user" do
     use_cassette "user.me" do
-      assert %FreshBex.User{} = FreshBex.User.me()
+      assert {%OAuth2.AccessToken{}, %FreshBex.User{}} = FreshBex.User.me()
     end
   end
 
   test "gets authenticated user's clients" do
     use_cassette "clients.list" do
-      assert [%FreshBex.Client{} | _] = FreshBex.Client.list()
+      assert {%OAuth2.AccessToken{}, [%FreshBex.Client{} | _]} = FreshBex.Client.list()
     end
   end
 
   test "gets authenticated user's clients recursing pagination" do
     use_cassette "clients.list.recurse" do
-      assert [%FreshBex.Client{} | _] = FreshBex.Client.list(recurse_pages: true)
+      assert {%OAuth2.AccessToken{}, [%FreshBex.Client{} | _]} =
+               FreshBex.Client.list(recurse_pages: true)
     end
   end
 
   test "gets authenticated user's projects" do
     use_cassette "projects.list.recurse" do
-      assert [%FreshBex.Project{} | _] = FreshBex.Project.list(recurse_pages: true)
+      assert {%OAuth2.AccessToken{}, [%FreshBex.Project{} | _]} =
+               FreshBex.Project.list(recurse_pages: true)
     end
   end
 
   test "gets authenticated user's tasks" do
     use_cassette "tasks.list.recurse" do
-      assert [%FreshBex.Task{} | _] = FreshBex.Task.list(recurse_pages: true)
+      assert {%OAuth2.AccessToken{}, [%FreshBex.Task{} | _]} =
+               FreshBex.Task.list(recurse_pages: true)
     end
   end
 
   test "gets authenticated user's time entries" do
     use_cassette "time_entries.list.recurse" do
-      assert [%FreshBex.TimeEntry{} | _] = FreshBex.TimeEntry.list(recurse_pages: true)
+      assert {%OAuth2.AccessToken{}, [%FreshBex.TimeEntry{} | _]} =
+               FreshBex.TimeEntry.list(recurse_pages: true)
     end
   end
 
@@ -54,7 +58,8 @@ defmodule FreshBexTest do
         project_id: 3_624_248
       }
 
-      assert %FreshBex.TimeEntry{} = FreshBex.TimeEntry.create(properties)
+      assert {%OAuth2.AccessToken{}, %FreshBex.TimeEntry{}} =
+               FreshBex.TimeEntry.create(properties)
     end
   end
 
@@ -69,13 +74,14 @@ defmodule FreshBexTest do
         project_id: 3_624_248
       }
 
-      assert %FreshBex.TimeEntry{duration: 5000} = FreshBex.TimeEntry.update(60_626_711, changes)
+      assert {%OAuth2.AccessToken{}, %FreshBex.TimeEntry{duration: 5000}} =
+               FreshBex.TimeEntry.update(60_626_711, changes)
     end
   end
 
   test "delete time entry" do
     use_cassette "time_entry.delete" do
-      assert :ok = FreshBex.TimeEntry.delete(60_626_711)
+      assert {%OAuth2.AccessToken{}, :ok} = FreshBex.TimeEntry.delete(60_626_711)
     end
   end
 

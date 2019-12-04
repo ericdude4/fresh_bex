@@ -5,7 +5,8 @@ defmodule FreshBex.Resource do
   ## Example Config
       config :fresh_bex,
         oauth_2_access_token: %OAuth2.AccessToken{},
-        account_id: 12341234
+        account_id: 12341234,
+        redirect_uri: "REQUIRED"
 
   The authorization headers can be customized for each request using the following options provided as a keyword list in each resource function:
 
@@ -77,12 +78,16 @@ defmodule FreshBex.Resource do
           @doc """
           Retrieve #{__MODULE__} by id. Accepts a keyword list of options.
 
+          returns {%OAuth2.AccessToken{}, %#{__MODULE__}{}}
+
           ## Options
           * `:id` - The id of the resource you are trying to retrieve. Defaults to empty, giving same behaviour as list/1
           * `:get_parameters` - Map of query parameters that you want to include in the query.
           """
           def get(options \\ []) do
             resource_id = Keyword.get(options, :id)
+            access_token = Keyword.get(options, :access_token)
+            client = FreshBex.get_client(access_token)
 
             url =
               "#{api_url(options)}/#{resource_path()}"
@@ -104,36 +109,34 @@ defmodule FreshBex.Resource do
                     end
                   end).()
 
-            case OAuth2.Client.get(
-                   FreshBex.get_client(Keyword.get(options, :access_token)),
-                   url
-                 ) do
+            case OAuth2.Client.get(client, url) do
               {:ok, %OAuth2.Response{body: resource}} ->
                 resource =
                   Jason.decode!(resource, keys: :atoms)
                   |> nested_resource()
 
-                if Map.has_key?(pagination_data(resource), :page) do
-                  # This means the resource is a list of the resource, in an attribute named after the resource
-                  resource_key = String.to_atom(resource())
+                return_data =
+                  if Map.has_key?(pagination_data(resource), :page) do
+                    # This means the resource is a list of the resource, in an attribute named after the resource
+                    resource_key = String.to_atom(resource())
 
-                  if Mix.env() == :test do
-                    # lets learn about new keys that freshbooks adds to their data objects without crashing in prod
-                    resource[resource_key]
-                    |> Enum.map(&struct!(__MODULE__, &1))
+                    if Mix.env() == :test do
+                      # lets learn about new keys that freshbooks adds to their data objects without crashing in prod
+                      resource[resource_key]
+                      |> Enum.map(&struct!(__MODULE__, &1))
+                    else
+                      resource[resource_key]
+                      |> Enum.map(&struct(__MODULE__, &1))
+                    end
                   else
-                    resource[resource_key]
-                    |> Enum.map(&struct(__MODULE__, &1))
+                    struct!(__MODULE__, resource)
                   end
-                else
-                  struct!(__MODULE__, resource)
-                end
+
+                {client.token, return_data}
 
               {:error, %OAuth2.Response{status_code: 401, body: body}} ->
                 # run refresh then retry
-                case OAuth2.Client.refresh_token(
-                       FreshBex.get_client(Keyword.get(options, :access_token))
-                     ) do
+                case OAuth2.Client.refresh_token(FreshBex.get_client(access_token)) do
                   {:ok, %OAuth2.Client{} = client} ->
                     get(options ++ [access_token: client.token])
 
@@ -169,18 +172,25 @@ defmodule FreshBex.Resource do
                   Map.merge(get_parameters, %{page: page, per_page: per_page})
               end
 
-            resources = get(options ++ [get_parameters: get_parameters])
+            {access_token, resources} = get(options ++ [get_parameters: get_parameters])
 
             if Enum.count(resources) == per_page do
-              get_recursive(options, resources ++ collector, page + 1, per_page)
+              get_recursive(
+                options ++ [access_token: access_token],
+                resources ++ collector,
+                page + 1,
+                per_page
+              )
             else
               # all pages exhausted for resource. return collection
-              resources ++ collector
+              {access_token, resources ++ collector}
             end
           end
 
           @doc """
           Retrieve list of #{__MODULE__} FreshBooks resource. Shares all options with get/1
+
+          returns {%OAuth2.AccessToken{}, [%#{__MODULE__}{}]}
 
           ## Options
           * `:page` - The page number to use in pagination. Default 1
@@ -207,11 +217,15 @@ defmodule FreshBex.Resource do
           @doc """
           Create new #{__MODULE__} resource. Parameters are not validated, but passed along in the request body. Please see FreshBooks API documentation for the appropriate body parameters for your resource.
 
+          returns {%OAuth2.AccessToken{}, %#{__MODULE__}{}}
+
           ## Params
           * `properties` - Map of resource properties to create the resource with. This will be different for each resource based on the specification in Harvest API
           """
           def create(properties, options \\ []) do
             url = "#{api_url(options)}/#{resource_path()}"
+            access_token = Keyword.get(options, :access_token)
+            client = FreshBex.get_client(access_token)
 
             resource_name = resource() |> String.replace("ies", "y")
 
@@ -227,12 +241,7 @@ defmodule FreshBex.Resource do
                   )
               end
 
-            case OAuth2.Client.post(
-                   FreshBex.get_client(Keyword.get(options, :access_token)),
-                   url,
-                   body,
-                   [{"Content-Type", "application/json"}]
-                 ) do
+            case OAuth2.Client.post(client, url, body, [{"Content-Type", "application/json"}]) do
               {:ok, %OAuth2.Response{body: resource}} ->
                 resource =
                   Jason.decode!(resource, keys: :atoms)
@@ -249,16 +258,14 @@ defmodule FreshBex.Resource do
                         map[key]
                       end).()
 
-                struct!(__MODULE__, resource)
+                {client.token, struct!(__MODULE__, resource)}
 
               {:error, %OAuth2.Response{status_code: 422, body: body}} ->
                 {:error, Jason.decode!(body)}
 
               {:error, %OAuth2.Response{status_code: 401, body: body}} ->
                 # run refresh then retry
-                case OAuth2.Client.refresh_token(
-                       FreshBex.get_client(Keyword.get(options, :access_token))
-                     ) do
+                case OAuth2.Client.refresh_token(FreshBex.get_client(access_token)) do
                   {:ok, %OAuth2.Client{} = client} ->
                     create(properties, options ++ [access_token: client.token])
 
@@ -282,12 +289,16 @@ defmodule FreshBex.Resource do
           @doc """
           Update given #{__MODULE__} resource. Parameters are not validated, but passed along in the request body. Please see FreshBooks API documentation for the appropriate body parameters for your resource.
 
+          returns {%OAuth2.AccessToken{}, %#{__MODULE__}{}}
+
           ## Params
           * `id` - id of `#{__MODULE__}` resource being updated.
           * `changes` - Map of changes to be applied to the resource.
           """
           def update(id, changes, options \\ []) do
             url = "#{api_url(options)}/#{resource_path()}/#{id}"
+            access_token = Keyword.get(options, :access_token)
+            client = FreshBex.get_client(access_token)
 
             resource_name = resource() |> String.replace("ies", "y")
 
@@ -303,12 +314,7 @@ defmodule FreshBex.Resource do
                   )
               end
 
-            case OAuth2.Client.put(
-                   FreshBex.get_client(Keyword.get(options, :access_token)),
-                   url,
-                   body,
-                   [{"Content-Type", "application/json"}]
-                 ) do
+            case OAuth2.Client.put(client, url, body, [{"Content-Type", "application/json"}]) do
               {:ok, %OAuth2.Response{body: resource}} ->
                 resource =
                   Jason.decode!(resource, keys: :atoms)
@@ -325,16 +331,14 @@ defmodule FreshBex.Resource do
                         map[key]
                       end).()
 
-                struct!(__MODULE__, resource)
+                {client.token, struct!(__MODULE__, resource)}
 
               {:error, %OAuth2.Response{status_code: 422, body: body}} ->
                 {:error, Jason.decode!(body)}
 
               {:error, %OAuth2.Response{status_code: 401, body: body}} ->
                 # run refresh then retry
-                case OAuth2.Client.refresh_token(
-                       FreshBex.get_client(Keyword.get(options, :access_token))
-                     ) do
+                case OAuth2.Client.refresh_token(FreshBex.get_client(access_token)) do
                   {:ok, %OAuth2.Client{} = client} ->
                     update(id, changes, options ++ [access_token: client.token])
 
@@ -365,15 +369,14 @@ defmodule FreshBex.Resource do
           """
           def delete(id, options \\ []) do
             url = "#{api_url(options)}/#{resource_path()}/#{id}"
+            access_token = Keyword.get(options, :access_token)
+            client = FreshBex.get_client(access_token)
 
-            case OAuth2.Client.delete(
-                   FreshBex.get_client(Keyword.get(options, :access_token)),
-                   url
-                 ) do
+            case OAuth2.Client.delete(client, url) do
               {:ok, resp} ->
                 case resp.status_code do
                   204 ->
-                    :ok
+                    {client.token, :ok}
 
                   404 ->
                     {:error, 404}
@@ -388,9 +391,7 @@ defmodule FreshBex.Resource do
 
               {:error, %OAuth2.Response{status_code: 401, body: body}} ->
                 # run refresh then retry
-                case OAuth2.Client.refresh_token(
-                       FreshBex.get_client(Keyword.get(options, :access_token))
-                     ) do
+                case OAuth2.Client.refresh_token(FreshBex.get_client(access_token)) do
                   {:ok, %OAuth2.Client{} = client} ->
                     delete(id, options ++ [access_token: client.token])
 
