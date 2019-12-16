@@ -120,14 +120,15 @@ defmodule FreshBex.Resource do
                     # This means the resource is a list of the resource, in an attribute named after the resource
                     resource_key = String.to_atom(resource())
 
-                    if Mix.env() == :test do
-                      # lets learn about new keys that freshbooks adds to their data objects without crashing in prod
-                      resource[resource_key]
-                      |> Enum.map(&struct!(__MODULE__, &1))
-                    else
-                      resource[resource_key]
-                      |> Enum.map(&struct(__MODULE__, &1))
-                    end
+                    # if Mix.env() == :test do
+                    #   # lets learn about new keys that freshbooks adds to their data objects without crashing in prod
+                    #   resource[resource_key]
+                    #   |> Enum.map(&struct!(__MODULE__, &1))
+                    # else
+                    resource[resource_key]
+                    |> Enum.map(&struct(__MODULE__, &1))
+
+                    # end
                   else
                     struct!(__MODULE__, resource)
                   end
