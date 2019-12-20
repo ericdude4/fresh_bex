@@ -1,8 +1,6 @@
 defmodule FreshBex do
   @moduledoc """
   Documentation for FreshBex.
-
-  You shouldn't need to use any of these functions directly.
   """
 
   @doc """
@@ -59,5 +57,47 @@ defmodule FreshBex do
       site: "https://api.freshbooks.com",
       token: access_token
     }
+  end
+
+  @doc """
+  Exchanges an OAuth code for an access token.
+
+  returns `%OAuth2.AccessToken{}`
+  """
+  def authorize(code) do
+    client =
+      OAuth2.Client.new(
+        token_url: "/auth/oauth/token",
+        client_id: Application.fetch_env!(:fresh_bex, :client_id),
+        client_secret: Application.fetch_env!(:fresh_bex, :client_secret),
+        redirect_uri: Application.fetch_env!(:fresh_bex, :redirect_uri),
+        site: "https://api.freshbooks.com"
+      )
+      |> OAuth2.Client.put_serializer("application/json", Jason)
+      |> OAuth2.Client.get_token!(code: code)
+
+    client.token
+  end
+
+  @doc """
+  Refresh an access token, and return a new access token.
+
+  returns `%OAuth2.Client{}`
+  """
+  def refresh_token(access_token) do
+    client =
+      get_client(access_token)
+      |> OAuth2.Client.put_serializer("application/json", Jason)
+
+    case OAuth2.Client.refresh_token(client) do
+      {:ok, %OAuth2.Client{} = client} ->
+        client.token
+
+      {:error, %OAuth2.Response{status_code: 401, body: body}} ->
+        raise(FreshBexError, "Invalid refresh token")
+
+      {:error, %OAuth2.Error{reason: reason}} ->
+        raise(FreshBexError, "Error: #{inspect(reason)}")
+    end
   end
 end

@@ -110,7 +110,7 @@ defmodule FreshBex.Resource do
                   end).()
 
             case OAuth2.Client.get(client, url) do
-              {:ok, %OAuth2.Response{body: resource}} ->
+              {:ok, response = %OAuth2.Response{body: resource}} ->
                 resource =
                   Jason.decode!(resource, keys: :atoms)
                   |> nested_resource()
@@ -120,15 +120,14 @@ defmodule FreshBex.Resource do
                     # This means the resource is a list of the resource, in an attribute named after the resource
                     resource_key = String.to_atom(resource())
 
-                    # if Mix.env() == :test do
-                    #   # lets learn about new keys that freshbooks adds to their data objects without crashing in prod
-                    #   resource[resource_key]
-                    #   |> Enum.map(&struct!(__MODULE__, &1))
-                    # else
-                    resource[resource_key]
-                    |> Enum.map(&struct(__MODULE__, &1))
-
-                    # end
+                    if Application.get_env(:fresh_bex, :env, :prod) == :test do
+                      # lets learn about new keys that freshbooks adds to their data objects without crashing in prod
+                      resource[resource_key]
+                      |> Enum.map(&struct!(__MODULE__, &1))
+                    else
+                      resource[resource_key]
+                      |> Enum.map(&struct(__MODULE__, &1))
+                    end
                   else
                     struct!(__MODULE__, resource)
                   end
@@ -137,16 +136,9 @@ defmodule FreshBex.Resource do
 
               {:error, %OAuth2.Response{status_code: 401, body: body}} ->
                 # run refresh then retry
-                case OAuth2.Client.refresh_token(FreshBex.get_client(access_token)) do
-                  {:ok, %OAuth2.Client{} = client} ->
-                    get(options ++ [access_token: client.token])
+                new_token = FreshBex.refresh_token(access_token)
 
-                  {:error, %OAuth2.Response{status_code: 401, body: body}} ->
-                    raise(FreshBexError, "Invalid refresh token")
-
-                  {:error, %OAuth2.Error{reason: reason}} ->
-                    raise(FreshBexError, "Error: #{inspect(reason)}")
-                end
+                get(options ++ [access_token: new_token])
 
               {:error, %OAuth2.Error{reason: reason}} ->
                 raise(FreshBexError, "Error: #{inspect(reason)}")
@@ -266,16 +258,8 @@ defmodule FreshBex.Resource do
 
               {:error, %OAuth2.Response{status_code: 401, body: body}} ->
                 # run refresh then retry
-                case OAuth2.Client.refresh_token(FreshBex.get_client(access_token)) do
-                  {:ok, %OAuth2.Client{} = client} ->
-                    create(properties, options ++ [access_token: client.token])
-
-                  {:error, %OAuth2.Response{status_code: 401, body: body}} ->
-                    raise(FreshBexError, "Invalid refresh token")
-
-                  {:error, %OAuth2.Error{reason: reason}} ->
-                    raise(FreshBexError, "Error: #{inspect(reason)}")
-                end
+                new_token = FreshBex.refresh_token(access_token)
+                create(properties, options ++ [access_token: new_token])
 
               {:error, %OAuth2.Error{reason: reason}} ->
                 raise(FreshBexError, "Error: #{inspect(reason)}")
@@ -339,16 +323,8 @@ defmodule FreshBex.Resource do
 
               {:error, %OAuth2.Response{status_code: 401, body: body}} ->
                 # run refresh then retry
-                case OAuth2.Client.refresh_token(FreshBex.get_client(access_token)) do
-                  {:ok, %OAuth2.Client{} = client} ->
-                    update(id, changes, options ++ [access_token: client.token])
-
-                  {:error, %OAuth2.Response{status_code: 401, body: body}} ->
-                    raise(FreshBexError, "Invalid refresh token")
-
-                  {:error, %OAuth2.Error{reason: reason}} ->
-                    raise(FreshBexError, "Error: #{inspect(reason)}")
-                end
+                new_token = FreshBex.refresh_token(access_token)
+                update(id, changes, options ++ [access_token: new_token])
 
               {:error, %OAuth2.Error{reason: reason}} ->
                 raise(FreshBexError, "Error: #{inspect(reason)}")
@@ -392,16 +368,8 @@ defmodule FreshBex.Resource do
 
               {:error, %OAuth2.Response{status_code: 401, body: body}} ->
                 # run refresh then retry
-                case OAuth2.Client.refresh_token(FreshBex.get_client(access_token)) do
-                  {:ok, %OAuth2.Client{} = client} ->
-                    delete(id, options ++ [access_token: client.token])
-
-                  {:error, %OAuth2.Response{status_code: 401, body: body}} ->
-                    raise(FreshBexError, "Invalid refresh token")
-
-                  {:error, %OAuth2.Error{reason: reason}} ->
-                    raise(FreshBexError, "Error: #{inspect(reason)}")
-                end
+                new_token = FreshBex.refresh_token(access_token)
+                delete(id, options ++ [access_token: new_token])
 
               {:error, %OAuth2.Error{reason: reason}} ->
                 raise(FreshBexError, "Error: #{inspect(reason)}")
