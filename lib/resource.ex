@@ -138,7 +138,7 @@ defmodule FreshBex.Resource do
                 # run refresh then retry
                 new_token = FreshBex.refresh_token(access_token)
 
-                get(options ++ [access_token: new_token])
+                get(Keyword.put(options, :access_token, new_token))
 
               {:error, %OAuth2.Error{reason: reason}} ->
                 raise(FreshBexError, "Error: #{inspect(reason)}")
@@ -259,7 +259,7 @@ defmodule FreshBex.Resource do
               {:error, %OAuth2.Response{status_code: 401, body: body}} ->
                 # run refresh then retry
                 new_token = FreshBex.refresh_token(access_token)
-                create(properties, options ++ [access_token: new_token])
+                create(properties, Keyword.put(options, :access_token, new_token))
 
               {:error, %OAuth2.Error{reason: reason}} ->
                 raise(FreshBexError, "Error: #{inspect(reason)}")
@@ -324,7 +324,7 @@ defmodule FreshBex.Resource do
               {:error, %OAuth2.Response{status_code: 401, body: body}} ->
                 # run refresh then retry
                 new_token = FreshBex.refresh_token(access_token)
-                update(id, changes, options ++ [access_token: new_token])
+                update(id, changes, Keyword.put(options, :access_token, new_token))
 
               {:error, %OAuth2.Error{reason: reason}} ->
                 raise(FreshBexError, "Error: #{inspect(reason)}")
@@ -369,7 +369,7 @@ defmodule FreshBex.Resource do
               {:error, %OAuth2.Response{status_code: 401, body: body}} ->
                 # run refresh then retry
                 new_token = FreshBex.refresh_token(access_token)
-                delete(id, options ++ [access_token: new_token])
+                delete(id, Keyword.put(options, :access_token, new_token))
 
               {:error, %OAuth2.Error{reason: reason}} ->
                 raise(FreshBexError, "Error: #{inspect(reason)}")

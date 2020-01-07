@@ -32,17 +32,34 @@ defmodule FreshBex do
           struct!(OAuth2.AccessToken, token)
 
         token = %{
-          "access_token" => _,
-          "token_type" => _,
-          "refresh_token" => _
+          "access_token" => access_token,
+          "token_type" => token_type,
+          "refresh_token" => refresh_token,
+          "created_at" => created_at,
+          "expires_in" => expires_in
         } ->
-          token =
-            for {key, val} <- token do
-              {String.to_existing_atom(key), val}
-            end
-            |> Enum.into(%{})
+          # This is the format that the new tokens come from fresh books
+          %OAuth2.AccessToken{
+            access_token: access_token,
+            token_type: token_type,
+            access_token: access_token,
+            refresh_token: refresh_token,
+            expires_at: created_at + expires_in
+          }
 
-          struct!(OAuth2.AccessToken, token)
+        token = %{
+          "access_token" => access_token,
+          "token_type" => token_type,
+          "refresh_token" => refresh_token,
+          "expires_at" => expires_at
+        } ->
+          # this is the format which the tokens are stored in the database
+          %OAuth2.AccessToken{
+            access_token: access_token,
+            token_type: token_type,
+            refresh_token: refresh_token,
+            expires_at: expires_at
+          }
 
         token ->
           raise(FreshBexError, "invalid access token provided")
@@ -85,19 +102,34 @@ defmodule FreshBex do
   returns `%OAuth2.Client{}`
   """
   def refresh_token(access_token) do
-    client =
-      get_client(access_token)
-      |> OAuth2.Client.put_serializer("application/json", Jason)
+    refresh_token = access_token["refresh_token"]
 
-    case OAuth2.Client.refresh_token(client) do
-      {:ok, %OAuth2.Client{} = client} ->
-        client.token
+    params = %{
+      "refresh_token" => refresh_token,
+      "grant_type" => "refresh_token",
+      "client_secret" => Application.fetch_env!(:fresh_bex, :client_secret),
+      "client_id" => Application.fetch_env!(:fresh_bex, :client_id),
+      "redirect_uri" => Application.fetch_env!(:fresh_bex, :redirect_uri)
+    }
 
-      {:error, %OAuth2.Response{status_code: 401, body: body}} ->
-        raise(FreshBexError, "Invalid refresh token")
+    case HTTPoison.post("https://api.freshbooks.com/auth/oauth/token", Jason.encode!(params), [
+           {"Api-Version", "alpha"},
+           {"Content-Type", "application/json"}
+         ]) do
+      {:ok, response} ->
+        case Jason.decode(response.body) do
+          {:ok, token = %{"access_token" => _access_token}} ->
+            token
 
-      {:error, %OAuth2.Error{reason: reason}} ->
-        raise(FreshBexError, "Error: #{inspect(reason)}")
+          {:ok, error = %{"error" => _error_reason}} ->
+            raise(FreshBexError, "Unable to refresh token: #{inspect(error)}")
+
+          {:error, error} ->
+            raise(FreshBexError, "Error: #{inspect(error)}")
+        end
+
+      {:error, error} ->
+        raise(FreshBexError, "Error: #{inspect(error)}")
     end
   end
 end
