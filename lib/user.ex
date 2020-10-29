@@ -3,6 +3,7 @@ defmodule FreshBex.User do
 
   defstruct [
     :id,
+    :identity_id,
     :first_name,
     :last_name,
     :email,

@@ -31,7 +31,7 @@ defmodule FreshBex do
         } ->
           struct!(OAuth2.AccessToken, token)
 
-        token = %{
+        %{
           "access_token" => access_token,
           "token_type" => token_type,
           "refresh_token" => refresh_token,
@@ -47,7 +47,7 @@ defmodule FreshBex do
             expires_at: created_at + expires_in
           }
 
-        token = %{
+        %{
           "access_token" => access_token,
           "token_type" => token_type,
           "refresh_token" => refresh_token,
@@ -61,7 +61,7 @@ defmodule FreshBex do
             expires_at: expires_at
           }
 
-        token ->
+        _token ->
           raise(FreshBexError, "invalid access token provided")
       end
 
